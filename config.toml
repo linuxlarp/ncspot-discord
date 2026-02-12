@@ -1,0 +1,7 @@
+[general]
+DEBUG = true
+
+[socket]
+RUNTIME_PATH = /run/user/1000/ncspot
+
+[format]
