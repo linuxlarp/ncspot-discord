@@ -2,6 +2,7 @@
 DEBUG = true
 
 [socket]
-RUNTIME_PATH = /run/user/1000/ncspot
+RUNTIME_PATH = "/run/user/1000/ncspot"
 
-[format]
+# [format]
+# Future options go here

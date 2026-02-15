@@ -7,10 +7,9 @@ import tomllib
 class Basic:
     def __init__(self) -> None:
         config = self.load_config_file()
-        print("toml data:", config)
 
-        self.RUNTIME_PATH = "/run/user/1000/ncspot"  # we find ncspot.sock here, where we make UNIX socket conncetion
-        self.DEBUG: bool = False
+        self.RUNTIME_PATH: str = config.get("socket", {}).get("RUNTIME_PATH", "/run/user/1000/ncspot")   # we find ncspot.sock here, where we make UNIX socket conncetion
+        self.DEBUG: bool = config.get("general", {}).get("DEBUG", False)
         pass
 
     def load_config_file(self):
@@ -18,18 +17,35 @@ class Basic:
         # ~/.config/ncspot-discord/config.toml (has priority)
         # config.toml (project source)
 
-        config_path = pathlib.Path("~/.config/ncspot-discord/")
+        CORE_DIR = os.path.dirname(os.path.abspath(__file__))
+        PROJECT_DIR = os.path.dirname(CORE_DIR) # We do this since we run from /core for this module
+
+        CONFIG_PATH = pathlib.Path("~/.config/ncspot-discord/").expanduser()
         load_file = None
 
-        if config_path.exists():
-            load_file = os.path.join(config_path, "config.toml")
+        user_config = CONFIG_PATH / "config.toml"
+        if user_config.exists():
+            load_file = str(user_config)
+            print(f"Attempting to load config from: {load_file}")
 
-            if not load_file:
-                load_file = os.path.join("config.toml")
+        if not load_file:
+            project_config = os.path.join(PROJECT_DIR, "config.toml")
 
-            with open(load_file, "rb") as config_file:
-                data = tomllib.load(config_file)
-                return data
+            if os.path.exists(project_config):
+                load_file = project_config
+                print(f"Attempting to load config from: {project_config}")
+            else:
+                raise FileNotFoundError(
+                    "Configuration file was not found in either:\n",
+                    f"- {user_config}\n",
+                    f"- {project_config}"
+                )
+
+        with open(load_file, "rb") as config_file:
+            data = tomllib.load(config_file)
+            print("Config loaded!")
+
+        return data
 
 
 basic = Basic()
