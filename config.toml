@@ -1,5 +1,5 @@
 [general]
-DEBUG = true
+DEBUG = false # Allow debugging logs in I/O
 
 [socket]
 RUNTIME_PATH = "/run/user/1000/ncspot"

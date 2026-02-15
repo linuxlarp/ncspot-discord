@@ -1,8 +1,11 @@
-from core import config as config
 from core import socket
+import core.config as config
+import core.logs as logger
+
+logs = logger.Logger()
 
 if __name__ == "__main__":
-    print(config.basic.DEBUG)
+    logs.info("Starting ncspot-discord")
 
     sock = socket.ListenerSocket()
 
