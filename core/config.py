@@ -1,17 +1,23 @@
 import os
 import pathlib
+
 import tomllib
 
 import core.config as config
 import core.logs as logger
+
 
 class Basic:
     def __init__(self) -> None:
         config = self.load_config_file()
 
         self.DEBUG: bool = config.get("general", {}).get("DEBUG", False)
-        self.ENABLE_LOGGING: bool = config.get("general", {}).get("ENABLE_LOGGING", False)
-        self.RUNTIME_PATH: str = config.get("socket", {}).get("RUNTIME_PATH", "/run/user/1000/ncspot")   # we find ncspot.sock here, where we make UNIX socket conncetion
+        self.ENABLE_LOGGING: bool = config.get("general", {}).get(
+            "ENABLE_LOGGING", False
+        )
+        self.RUNTIME_PATH: str = config.get("socket", {}).get(
+            "RUNTIME_PATH", "/run/user/1000/ncspot"
+        )  # we find ncspot.sock here, where we make UNIX socket conncetion
 
         pass
 
@@ -22,7 +28,9 @@ class Basic:
 
         TEMP_LOGS = logger.Logger()
         CORE_DIR = os.path.dirname(os.path.abspath(__file__))
-        PROJECT_DIR = os.path.dirname(CORE_DIR) # We do this since we run from /core for this module
+        PROJECT_DIR = os.path.dirname(
+            CORE_DIR
+        )  # We do this since we run from /core for this module
 
         CONFIG_PATH = pathlib.Path("~/.config/ncspot-discord/").expanduser()
         load_file = None
@@ -43,14 +51,14 @@ class Basic:
                     "Failed to load configuration >",
                     "Configuration file was not found in either:\n",
                     f"- {user_config}\n",
-                    f"- {project_config}"
+                    f"- {project_config}",
                 )
 
                 raise FileNotFoundError()
 
         with open(load_file, "rb") as config_file:
             data = tomllib.load(config_file)
-            TEMP_LOGS.success("Config sucessfully loaded.")
+            TEMP_LOGS.success("Config successfully loaded.")
 
         return data
 

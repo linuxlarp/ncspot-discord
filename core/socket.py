@@ -1,7 +1,11 @@
-import socket
+import json
 import os
+import socket
+
 import core.config as config
 import core.logs as logger
+import core.models as models
+
 
 class ListenerSocket:
     def __init__(self) -> None:
@@ -13,24 +17,30 @@ class ListenerSocket:
     def start_sock(self):
         """Creates our asyncio loop for connect_sock"""
 
-
     def connect_sock(self):
-        self.logs.info(f"Starting socket at {self.config.RUNTIME_PATH}/ncspot.sock ....")
+        self.logs.info(
+            f"Starting socket at {self.config.RUNTIME_PATH}/ncspot.sock ...."
+        )
         self.logs.debug(self.config.RUNTIME_PATH)
 
         try:
-            connection = self.client.connect(self.sock_path)
+            self.client.connect(self.sock_path)
             self.logs.success("Successfully connected to socket!")
         except Exception as e:
-            self.logs.error("Unexpected error occured in initial connection to socket:", e)
-
+            self.logs.error(
+                "Unexpected error occured in initial connection to socket:", e
+            )
 
         try:
             while True:
-                data = self.client.recv(1024)
-
+                data = self.client.recv(1024).decode("utf-8")
                 if data:
-                    self.logs.debug(f"Recieved: {data.decode('utf-8')}")
+                    self.logs.debug(f"Recv: {data}")
+
+                    formatted = json.loads(data)
+                    model = models.SpotifyResponse(**formatted)
+
+                    self.logs.debug(model.playable.title)
                 else:
                     self.logs.warn("Client connection closed by server")
                     break
@@ -39,4 +49,4 @@ class ListenerSocket:
             self.logs.error("Unexpected error occured in socket runtime:", e)
         finally:
             self.client.close()
-            self.logs.success("Socket client sucessfully closed.")
+            self.logs.warn("Socket connection terminated.")
