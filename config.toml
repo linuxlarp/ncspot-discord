@@ -8,5 +8,6 @@ RUNTIME_PATH = "/run/user/1000/ncspot" # We recommend you leave this unchanged u
 DISCORD_CLIENT_ID = 1451346257141436417
 
 
-# [format]
-# Future options go here
+[format]
+DISPLAY_PAUSE = true # Wether to display if media is paused on RPC or not, will not display anything if false
+ACTIVITY_TYPE = "LISTENING" # Discord activity type, Can be either, PLAYING, LISTENING (Defualts to listening)

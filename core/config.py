@@ -19,6 +19,23 @@ class Basic:
             "RUNTIME_PATH", "/run/user/1000/ncspot"
         )  # we find ncspot.sock here, where we make UNIX socket conncetion
 
+        self.API_CLIENT_ID: str = config.get("api", {}).get("CLIENT_ID", None)
+        self.RPC_DISPLAY_PAUSE: str = config.get("format", {}).get(
+            "DISPLAY_PAUSE", False
+        )
+
+        try:
+            CORE_DIR = os.path.dirname(os.path.abspath(__file__))
+            PROJECT_DIR = os.path.dirname(
+                CORE_DIR
+            )  # We do this since we run from /core for this module
+
+            with open(os.path.join(PROJECT_DIR, "VERSION"), "r") as version_data:
+                content = version_data.read()
+                self.VERSION: str = content
+        except FileNotFoundError:
+            self.VERSION = "?"
+
         pass
 
     def load_config_file(self):
