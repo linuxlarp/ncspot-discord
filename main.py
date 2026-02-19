@@ -1,6 +1,6 @@
-from core import socket
 import core.config as config
 import core.logs as logger
+from core import socket
 
 logs = logger.Logger()
 
@@ -9,4 +9,4 @@ if __name__ == "__main__":
 
     sock = socket.ListenerSocket()
 
-    sock.connect_sock()
+    sock.start_sock()

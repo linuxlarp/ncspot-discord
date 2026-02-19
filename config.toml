@@ -2,7 +2,11 @@
 DEBUG = true # Allow debugging logs in I/O
 
 [socket]
-RUNTIME_PATH = "/run/user/1000/ncspot"
+RUNTIME_PATH = "/run/user/1000/ncspot" # We recommend you leave this unchanged unless running the command 'ncspot info' says otherwise.
+
+[api]
+DISCORD_CLIENT_ID = 1451346257141436417
+
 
 # [format]
 # Future options go here

@@ -1,6 +1,9 @@
 import json
 import os
 import socket
+import time
+
+import inotify.adapters
 
 import core.config as config
 import core.logs as logger
@@ -15,7 +18,25 @@ class ListenerSocket:
         self.sock_path = os.path.join(self.config.RUNTIME_PATH, "ncspot.sock")
 
     def start_sock(self):
-        """Creates our asyncio loop for connect_sock"""
+        """Creates our loop for connect_sock"""
+
+        sock_name = os.path.basename(self.sock_path)
+
+        self.logs.info("Waiting for socket file to appear...")
+
+        while True:
+            if os.path.exists(self.sock_path):
+                self.logs.info("Socket file found, attempting connection")
+                self.connect_sock()
+                self.logs.warn("Socket disconnected, waiting for it to return")
+
+            i = inotify.adapters.Inotify()
+            i.add_watch(self.config.RUNTIME_PATH)
+
+            for event in i.event_gen(yield_nones=False):
+                (_, type_names, _, filename) = event
+                if filename == sock_name and "IN_CREATE" in type_names:
+                    break
 
     def connect_sock(self):
         self.logs.info(
@@ -38,9 +59,22 @@ class ListenerSocket:
                     self.logs.debug(f"Recv: {data}")
 
                     formatted = json.loads(data)
-                    model = models.SpotifyResponse(**formatted)
 
-                    self.logs.debug(model.playable.title)
+                    if any(
+                        state in str(formatted).lower()
+                        for state in ("paused", "stopped", "finishedtrack")
+                    ):
+                        self.logs.debug("Media paused, stopped or track ended")
+                        ## Custom logic to update RPC or wait.. etc
+                    else:
+                        model = models.SpotifyResponse(**formatted)
+
+                        ## Send parsed data to RPC
+
+                        self.logs.debug(
+                            f"Playing: {model.playable.title} by {model.playable.artists}"
+                        )
+
                 else:
                     self.logs.warn("Client connection closed by server")
                     break
@@ -49,4 +83,4 @@ class ListenerSocket:
             self.logs.error("Unexpected error occured in socket runtime:", e)
         finally:
             self.client.close()
-            self.logs.warn("Socket connection terminated.")
+            self.logs.info("Socket connection terminated.")
