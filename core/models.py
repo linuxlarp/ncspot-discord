@@ -4,15 +4,6 @@ from typing import List
 from pydantic import BaseModel, Field
 
 
-class Activity(Enum):
-    Playing = 0
-    Streaming = 1
-    Listening = 2
-    Watching = 3
-    Custom = 4
-    Competing = 5
-
-
 class StatusDisplay(Enum):
     Name = 0
     State = 1

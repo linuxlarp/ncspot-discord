@@ -2,8 +2,6 @@ import json
 import os
 import socket
 import time
-from dis import disco
-from threading import ExceptHookArgs
 
 import inotify.adapters
 
@@ -56,17 +54,17 @@ class ListenerSocket:
             )
 
         try:
+            self.RPC = discord.RPC()
+        except Exception as e:
+            self.logs.error("Failed async launch", e)
+
+        try:
             while True:
                 data = self.client.recv(1024).decode("utf-8")
                 if data:
                     self.logs.debug(f"Recv: {data}")
 
                     formatted = json.loads(data)
-
-                    try:
-                        RPC = discord.RPC()
-                    except Exception as e:
-                        self.logs.error("Failed async launch", e)
 
                     if any(
                         state in str(formatted).lower()
