@@ -1,11 +1,13 @@
-import logging
-import json
 import datetime
+import json
+import logging
 import traceback
-import core.config as config
-
 from pathlib import Path
-from colorama import init as colorama_init, Fore, Back, Style
+
+from colorama import Back, Fore, Style
+from colorama import init as colorama_init
+
+import core.config as config
 
 colorama_init(autoreset=True)
 
@@ -32,7 +34,9 @@ class Logger:
 
         if data is not None:
             if isinstance(data, BaseException):
-                detail = "".join(traceback.format_exception(type(data), data, data.__traceback__)).rstrip()
+                detail = "".join(
+                    traceback.format_exception(type(data), data, data.__traceback__)
+                ).rstrip()
             elif isinstance(data, (dict, list, tuple)):
                 detail = json.dumps(data, indent=2, default=str)
             else:
@@ -41,10 +45,18 @@ class Logger:
             formatted = f" └─ {detail}"
             print(f"{Fore.LIGHTBLACK_EX}{formatted}{Style.RESET_ALL}")
 
-    def error(self, m, d=None): self._log("error", m, d)
-    def warn(self, m, d=None): self._log("warn", m, d)
-    def info(self, m, d=None): self._log("info", m, d)
-    def success(self, m, d=None): self._log("success", m, d)
+    def error(self, m, d=None):
+        self._log("error", m, d)
+
+    def warn(self, m, d=None):
+        self._log("warn", m, d)
+
+    def info(self, m, d=None):
+        self._log("info", m, d)
+
+    def success(self, m, d=None):
+        self._log("success", m, d)
+
     def debug(self, m, d=None):
         if config.basic.DEBUG is True:
             self._log("debug", m, d)

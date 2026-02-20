@@ -19,9 +19,12 @@ class Basic:
             "RUNTIME_PATH", "/run/user/1000/ncspot"
         )  # we find ncspot.sock here, where we make UNIX socket conncetion
 
-        self.API_CLIENT_ID: str = config.get("api", {}).get("CLIENT_ID", None)
+        self.API_CLIENT_ID: str = config.get("api", {}).get("DISCORD_CLIENT_ID", None)
         self.RPC_DISPLAY_PAUSE: str = config.get("format", {}).get(
             "DISPLAY_PAUSE", False
+        )
+        self.DISCORD_IPC_PATH: str = config.get("api", {}).get(
+            "DISCORD_IPC_PATH", "run/user/1000/discord-ipc-0"
         )
 
         try:

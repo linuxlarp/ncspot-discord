@@ -2,12 +2,15 @@ import json
 import os
 import socket
 import time
+from dis import disco
+from threading import ExceptHookArgs
 
 import inotify.adapters
 
 import core.config as config
 import core.logs as logger
 import core.models as models
+import core.rpc as discord
 
 
 class ListenerSocket:
@@ -49,7 +52,7 @@ class ListenerSocket:
             self.logs.success("Successfully connected to socket!")
         except Exception as e:
             self.logs.error(
-                "Unexpected error occured in initial connection to socket:", e
+                "Unexpected error occurred in initial connection to socket:", e
             )
 
         try:
@@ -59,6 +62,11 @@ class ListenerSocket:
                     self.logs.debug(f"Recv: {data}")
 
                     formatted = json.loads(data)
+
+                    try:
+                        RPC = discord.RPC()
+                    except Exception as e:
+                        self.logs.error("Failed async launch", e)
 
                     if any(
                         state in str(formatted).lower()
