@@ -2,6 +2,7 @@ import json
 import os
 import socket
 import struct
+from uuid import uuid4
 
 import core.config as config
 import core.logs as logger
@@ -64,12 +65,6 @@ class RPC:
 
                 self.logs.debug(f"Handshake: {data}")
 
-                self.logs.success(f"""
-User Information:
-- Name: {data["data"]["user"]["username"]}
-- ID: {data["data"]["user"]["id"]}
-                """)  # If anyone has a better idea how to implement this. let me know :)
-
                 return True
             else:
                 self.logs.warn("Failed to connect to Discord RPC!")
@@ -81,8 +76,93 @@ User Information:
                 )
                 raise Exception
 
+    def set_activity(self, Activity: models.Activity):
+        if type(Activity.activity_type) != models.ActivityType:
+            self.logs.error(
+                "Unable to process activity change:", "ActivityType is invalid."
+            )
+            return
+
+        if Activity.buttons and len(Activity.buttons) > 2
+            self.logs.error(
+                "Unable top process activity change:", "You may not add more then 2 buttons to Activity.buttons"
+            )
+
+        act = { ## Brace for impact
+            "state": Activity.state,
+            "details": Activity.details,
+            "type": Activity.activity_type,
+            "status_display_type": 0, ## Name
+            "state_url": Activity.state_url,
+            "details_url": Activity.details_url,
+            "timestamps": {
+                "start": Activity.ts_start,
+                "end": Activity.ts_end
+            },
+            "assets": {
+                "large_image": Activity.large_img,
+                "large_text": Activity.large_img_text,
+                "large_url": Activity.large_img_link,
+                "small_image": Activity.small_img,
+                "small_text": Activity.small_img_text,
+                "small_url": Activity.small_img_link,
+            },
+
+            "party": {
+                "id": Activity.party_id,
+                "size": Activity.party_size
+            },
+
+            "secrets": {
+                "join": Activity.join_secret,
+                "spectate": Activity.spectate_secret,
+                "match": Activity.match_secret,
+            },
+
+            "buttons": Activity.buttons
+        }
+
+        payload = {
+            'cmd': 'SET_ACTIVITY',
+            'args': {
+                'pid': os.getpid(),
+                'activity': None if Activity.clear else act
+            },
+            'nonce': str(uuid4()) ## Generate a one time UUID-4
+        }
+
+        if not self.socket or not self.client:
+            self.logs.warn("Dropped connection when attempting to set activity, reconnecting..")
+            self.start_connection()
+
+        try:
+            self._send(payload, OP_FRAME)
+            self.logs.debug(f"Payload: {payload}")
+            self.logs.debug("RPC_UPDATED")
+        except Exception as e:
+            self.logs.error("Failed to update RPC!", e)
+
+        return
+
+    def disconnect(self):
+        self.logs.warn("Attempting to close RPC connection.")
+
+        try:
+            self._send({}, OP_CLOSE)
+            self.socket.shutdown(socket.SHUT_RDWR)
+            self.socket.close()
+
+            self.logs.success("Discord RPC connection closed!")
+        except Exception as e:
+            self.logs.debug("Socket closed before command was executed.", e)
+
+    # Subclass for controling ncspot track data
     class CurrentTrack:
         def __init__(self, client, data: models.Playable) -> None:
+            act = models.Activity(
+
+            )
+
             pass
 
         def update_data(self, paused: bool):

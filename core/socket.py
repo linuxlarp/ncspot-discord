@@ -56,7 +56,8 @@ class ListenerSocket:
         try:
             self.RPC = discord.RPC()
         except Exception as e:
-            self.logs.error("Failed async launch", e)
+            self.logs.error("Failed to launch Discord RPC Client!", e)
+            raise Exception
 
         try:
             while True:
@@ -86,7 +87,8 @@ class ListenerSocket:
                     break
 
         except Exception as e:
-            self.logs.error("Unexpected error occured in socket runtime:", e)
+            self.logs.error("Unexpected error occurred in socket runtime:", e)
         finally:
             self.client.close()
+            self.RPC.disconnect()
             self.logs.info("Socket connection terminated.")
