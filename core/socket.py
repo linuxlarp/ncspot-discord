@@ -75,8 +75,7 @@ class ListenerSocket:
                         ## Custom logic to update RPC or wait.. etc
                     else:
                         model = models.SpotifyResponse(**formatted)
-
-                        ## Send parsed data to RPC
+                        self.RPC.update_track(model)
 
                         self.logs.debug(
                             f"Playing: {model.playable.title} by {model.playable.artists}"

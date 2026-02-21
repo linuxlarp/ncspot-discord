@@ -1,6 +1,5 @@
 from enum import Enum
-from pydoc import classify_class_attrs
-from typing import List
+from typing import List, Optional
 
 from pydantic import BaseModel, Field
 
@@ -52,31 +51,26 @@ class Playable(BaseModel):
 
 
 class Activity(BaseModel):
-    state: str
-    details: str
-    activity_type: ActivityType
-
-    large_img: str
-    large_img_text: str
-    large_img_link: str
-
-    small_img: str
-    small_img_text: str
-    small_img_link: str
-
-    state_url: str
-    details_url: str
-
-    ts_start: int
-    ts_end: int
-
-    party_id: str
-    party_size: list
-    join_secret: str
-    spectate_secret: str
-    match_secret: str
-    buttons: list
-    clear: bool
+    state: Optional[str] = None
+    details: Optional[str] = None
+    activity_type: Optional[ActivityType] = None
+    large_img: Optional[str] = None
+    large_img_text: Optional[str] = None
+    large_img_link: Optional[str] = None
+    small_img: Optional[str] = None
+    small_img_text: Optional[str] = None
+    small_img_link: Optional[str] = None
+    state_url: Optional[str] = None
+    details_url: Optional[str] = None
+    ts_start: Optional[int] = None
+    ts_end: Optional[int] = None
+    party_id: Optional[str] = None
+    party_size: Optional[list] = None
+    join_secret: Optional[str] = None
+    spectate_secret: Optional[str] = None
+    match_secret: Optional[str] = None
+    buttons: Optional[list] = None
+    clear: bool = False
 
 
 class SpotifyResponse(BaseModel):

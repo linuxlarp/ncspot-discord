@@ -6,7 +6,6 @@ RUNTIME_PATH = "/run/user/1000/ncspot" # We recommend you leave this unchanged u
 
 [api]
 DISCORD_CLIENT_ID = 1451346257141436417
-DISCORD_IPC_PATH = "/run/user/1000/discord-ipc-0" # We recommend you leave this unchanged, if the socket is not appearing. Ensure flatpak has access to xdg-run/user/1000
 
 
 [format]
