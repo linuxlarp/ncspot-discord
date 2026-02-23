@@ -4,22 +4,6 @@ from typing import List, Optional
 from pydantic import BaseModel, Field
 
 
-# https://discord.com/developers/docs/events/gateway-events#activity-object-activity-types
-class ActivityType(Enum):
-    Playing = 0
-    Streaming = 1
-    Listening = 2
-    Watching = 3
-    Custom = 4
-    Competing = 5
-
-
-class StatusDisplay(Enum):
-    Name = 0
-    State = 1
-    Details = 2
-
-
 class ModeDetails(BaseModel):
     secs_since_epoch: int
     nanos_since_epoch: int

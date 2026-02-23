@@ -72,10 +72,10 @@ class ListenerSocket:
                         for state in ("paused", "stopped", "finishedtrack")
                     ):
                         self.logs.debug("Media paused, stopped or track ended")
-                        ## Custom logic to update RPC or wait.. etc
+                        self.RPC.update_track(track=None, clear=True)
                     else:
                         model = models.SpotifyResponse(**formatted)
-                        self.RPC.update_track(model)
+                        self.RPC.update_track(model, clear=False)
 
                         self.logs.debug(
                             f"Playing: {model.playable.title} by {model.playable.artists}"

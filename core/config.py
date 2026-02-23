@@ -3,7 +3,6 @@ import pathlib
 
 import tomllib
 
-import core.config as config
 import core.logs as logger
 
 
@@ -17,15 +16,13 @@ class Basic:
         )
         self.RUNTIME_PATH: str = config.get("socket", {}).get(
             "RUNTIME_PATH", "/run/user/1000/ncspot"
-        )  # we find ncspot.sock here, where we make UNIX socket conncetion
+        )  # we find ncspot.sock here, where we make UNIX socket connection
 
         self.API_CLIENT_ID: str = config.get("api", {}).get("DISCORD_CLIENT_ID", None)
         self.RPC_DISPLAY_PAUSE: str = config.get("format", {}).get(
             "DISPLAY_PAUSE", False
         )
-        self.DISCORD_IPC_PATH: str = config.get("api", {}).get(
-            "DISCORD_IPC_PATH", "run/user/1000/discord-ipc-0"
-        )
+        self.DISPLAY_CLIENT: bool = config.get("format", {}).get("DISPLAY_CLIENT", True)
 
         try:
             CORE_DIR = os.path.dirname(os.path.abspath(__file__))

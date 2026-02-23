@@ -1,7 +1,8 @@
-from sre_parse import State
+import os
 
 from pypresence import Presence
 from pypresence.types import ActivityType, StatusDisplayType
+from typing_extensions import Optional
 
 import core.config as config
 import core.logs as logger
@@ -25,8 +26,29 @@ class RPC:
         except Exception as e:
             self.logs.error("Failed to connect to Discord RPC!", e)
 
-    def update_track(self, track: models.SpotifyResponse):
-        self.client.update(state="Here it is!", details="NCSPOT!", name="Test 123456")
+    def update_track(self, track: Optional[models.SpotifyResponse], clear: bool):
+        player_name = "ncspot"
+
+        if self.config.DISPLAY_CLIENT is False:
+            player_name = "Spotify"
+
+        if clear:
+            self.client.clear()
+            return
+
+        if track is not None:
+            artists = ", ".join(str(artist) for artist in track.playable.artists)
+            state = f"by {artists}"
+
+            if track.playable.album:
+                state = f"by {artists} \n (on {track.playable.album}"
+
+            self.client.update(
+                activity_type=ActivityType.LISTENING,
+                details=track.playable.title,
+                state=state,
+                name=player_name,
+            )
 
     def disconnect(self):
         self.client.close()
