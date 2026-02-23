@@ -5,10 +5,10 @@ DEBUG = true # Allow debugging logs in I/O
 RUNTIME_PATH = "/run/user/1000/ncspot" # We recommend you leave this unchanged unless running the command 'ncspot info' says otherwise.
 
 [api]
-DISCORD_CLIENT_ID = 1451346257141436417
+DISCORD_CLIENT_ID = 1475331730884788379
 
 
 [format]
-DISPLAY_PAUSE = true # Wether to display if media is paused on RPC or not, will not display anything if false
-ACTIVITY_TYPE = "LISTENING" # Discord activity type, Can be either, PLAYING, LISTENING (Defualts to listening)
-DISPLAY_CLIENT = false # Display if we are using ncspot to play music, Will be "Spotify" if false.
+SHOW_LINKS = true # Add buttons to link to music on Spotify
+ACTIVITY_TYPE = "LISTENING" # Discord activity type, Can be either, PLAYING, LISTENING (Defaults to listening)
+DISPLAY_CLIENT = true # Display if we are using ncspot to play music, Will be "Spotify" if false.

@@ -16,7 +16,7 @@ class RPC:
         self.logs = logger.Logger()
 
         self.client_id = self.config.API_CLIENT_ID
-        self.display_pause = self.config.RPC_DISPLAY_PAUSE
+        self.show_links = self.config.SHOW_LINKS
         self.client: Presence = Presence(self.client_id)
 
         try:
@@ -28,9 +28,11 @@ class RPC:
 
     def update_track(self, track: Optional[models.SpotifyResponse], clear: bool):
         player_name = "ncspot"
+        player_link = "https://github.com/hrkfdn/ncspot"
 
         if self.config.DISPLAY_CLIENT is False:
             player_name = "Spotify"
+            player_link = "https://spotify.com"
 
         if clear:
             self.client.clear()
@@ -39,15 +41,23 @@ class RPC:
         if track is not None:
             artists = ", ".join(str(artist) for artist in track.playable.artists)
             state = f"by {artists}"
+            buttons = None
 
-            if track.playable.album:
-                state = f"by {artists} \n (on {track.playable.album}"
+            if self.config.SHOW_LINKS:
+                buttons = [
+                    {"label": "Play on Spotify", "url": track.playable.url},
+                ]
 
             self.client.update(
                 activity_type=ActivityType.LISTENING,
                 details=track.playable.title,
                 state=state,
                 name=player_name,
+                large_image=track.playable.cover_url,
+                large_text=track.playable.album,
+                small_image=player_name,
+                small_text=player_name,
+                buttons=buttons,
             )
 
     def disconnect(self):

@@ -19,9 +19,7 @@ class Basic:
         )  # we find ncspot.sock here, where we make UNIX socket connection
 
         self.API_CLIENT_ID: str = config.get("api", {}).get("DISCORD_CLIENT_ID", None)
-        self.RPC_DISPLAY_PAUSE: str = config.get("format", {}).get(
-            "DISPLAY_PAUSE", False
-        )
+        self.SHOW_LINKS: str = config.get("format", {}).get("SHOW_LINKS", True)
         self.DISPLAY_CLIENT: bool = config.get("format", {}).get("DISPLAY_CLIENT", True)
 
         try:
