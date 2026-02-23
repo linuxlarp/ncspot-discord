@@ -5,10 +5,7 @@ DEBUG = true # Allow debugging logs in I/O
 RUNTIME_PATH = "/run/user/1000/ncspot" # We recommend you leave this unchanged unless running the command 'ncspot info' says otherwise.
 
 [api]
-DISCORD_CLIENT_ID = 1475331730884788379
-
+DISCORD_CLIENT_ID = 1475331730884788379 # Our public client ID, We recommend you leave this alone. If you want to use your own client, read CUSTOM_CLIENT.md
 
 [format]
-SHOW_LINKS = true # Add buttons to link to music on Spotify
-ACTIVITY_TYPE = "LISTENING" # Discord activity type, Can be either, PLAYING, LISTENING (Defaults to listening)
 DISPLAY_CLIENT = true # Display if we are using ncspot to play music, Will be "Spotify" if false.

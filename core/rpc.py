@@ -54,8 +54,8 @@ class RPC:
                 state=state,
                 name=player_name,
                 large_image=track.playable.cover_url,
-                large_text=track.playable.album,
-                small_image=player_name,
+                large_text=f"on {track.playable.album}",
+                small_image=player_name.lower(),
                 small_text=player_name,
                 buttons=buttons,
             )
