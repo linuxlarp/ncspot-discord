@@ -17,5 +17,4 @@ if __name__ == "__main__":
         )
 
     sock = socket.ListenerSocket()
-
     sock.start_sock()  ## Let it rip

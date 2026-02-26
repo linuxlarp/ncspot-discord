@@ -39,21 +39,21 @@ class RPC:
 
     def update_track(self, track: Optional[models.SpotifyResponse], clear: bool):
         try:
-            player_name = "ncspot"
-            small_image = player_name.lower()
-            start, end = None, None
-
-            if self.config.DISPLAY_PLAYER_ICON is False:
-                small_image = None
-
-            if self.config.DISPLAY_CLIENT is False:
-                player_name = "Spotify"
-
             if clear:
                 self.client.clear()
                 return
 
             if track is not None:
+                player_name = "ncspot"
+                small_image = player_name.lower()
+                start, end = None, None
+
+                if self.config.DISPLAY_PLAYER_ICON is False:
+                    small_image = None
+
+                if self.config.DISPLAY_CLIENT is False:
+                    player_name = "Spotify"
+
                 artists = ", ".join(str(artist) for artist in track.playable.artists)
                 state = f"by {artists}"
 

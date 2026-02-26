@@ -10,10 +10,15 @@ By default, ncspot does not interact with the Discord RPC, nor does it support i
 ## Prerequisites
 - [Discord Client](https://discord.com) or [Vesktop/Vencord](https://vencord.dev)
 - [ncspot](https://github.com/hrkfdn/ncspot)
-- Linux/UNIX Based System (Linux is officially supported as of now)
+- **Linux** or Unix Based System *(Linux is the only platform we currently support, future compatibility expected in another update)*
 
-## Warning
-This project is currently unfinished, basic functionality is guaranteed but features that you may expect may not be present until a later date, and this program is not officially packaged on PyPi or compiled for any other package mirrors.
+## Examples
+
+## Installation
+
+## Documentation
+To view documentation we currently have available, use the hyperlinks below.
+
 
 ## Credits
 The following resources, and repositories contributed, helped or served as inspiration to the development of this project:

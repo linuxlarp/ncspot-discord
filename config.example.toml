@@ -1,5 +1,5 @@
 [general]
-DEBUG = true # Allow debugging logs in I/O
+DEBUG = false # Allow debugging logs in I/O
 LOGS_ADD_SONG = true # Once updated on RPC, add additional logging to show what song is displaying on RPC.
 
 [socket]
