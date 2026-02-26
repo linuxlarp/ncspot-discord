@@ -19,75 +19,69 @@ class ListenerSocket:
         self.sock_path = os.path.join(self.config.RUNTIME_PATH, "ncspot.sock")
 
     def start_sock(self):
-        """Creates our loop for connect_sock"""
-
         sock_name = os.path.basename(self.sock_path)
-
         self.logs.info("Waiting for socket file to appear...")
 
-        while True:
-            if os.path.exists(self.sock_path):
-                self.logs.info("Socket file found, attempting connection")
-                self.connect_sock()
-                self.logs.warn("Socket disconnected, waiting for it to return")
-
+        if not os.path.exists(self.sock_path):
             i = inotify.adapters.Inotify()
             i.add_watch(self.config.RUNTIME_PATH)
-
             for event in i.event_gen(yield_nones=False):
                 (_, type_names, _, filename) = event
                 if filename == sock_name and "IN_CREATE" in type_names:
                     break
 
+        self.logs.info("Socket file found, attempting connection...")
+        self.connect_sock()
+
     def connect_sock(self):
-        self.logs.info(
-            f"Starting socket at {self.config.RUNTIME_PATH}/ncspot.sock ...."
-        )
-        self.logs.debug(self.config.RUNTIME_PATH)
-
-        try:
-            self.client.connect(self.sock_path)
-            self.logs.success("Successfully connected to socket!")
-        except Exception as e:
-            self.logs.error(
-                "Unexpected error occurred in initial connection to socket:", e
-            )
-
         try:
             self.RPC = discord.RPC()
         except Exception as e:
             self.logs.error("Failed to launch Discord RPC Client!", e)
-            raise Exception
+            return
 
-        try:
-            while True:
-                data = self.client.recv(1024).decode("utf-8")
-                if data:
-                    self.logs.debug(f"Recv: {data}")
+        while True:
+            self.client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)
+            try:
+                self.logs.info(f"Connecting to socket at {self.sock_path}...")
+                self.client.connect(self.sock_path)
+                self.logs.success("Successfully connected to socket!")
+                self._read_loop()
+            except Exception as e:
+                self.logs.error("Socket error:", e)
+            finally:
+                self.client.close()
 
-                    formatted = json.loads(data)
+            self.logs.warn("Socket disconnected, waiting for it to return...")
+            self._wait_for_socket()
 
-                    if any(
-                        state in str(formatted).lower()
-                        for state in ("paused", "stopped", "finishedtrack")
-                    ):
-                        self.logs.debug("Media paused, stopped or track ended")
-                        self.RPC.update_track(track=None, clear=True)
-                    else:
-                        model = models.SpotifyResponse(**formatted)
-                        self.RPC.update_track(model, clear=False)
+    def _read_loop(self):
+        while True:
+            data = self.client.recv(1024).decode("utf-8")
+            if not data:
+                self.logs.warn("Connection closed by server")
+                break
 
-                        self.logs.debug(
-                            f"Playing: {model.playable.title} by {model.playable.artists}"
-                        )
+            self.logs.debug(f"Recv: {data}")
+            formatted = json.loads(data)
 
-                else:
-                    self.logs.warn("Client connection closed by server")
-                    break
+            if any(
+                state in str(formatted).lower()
+                for state in ("paused", "stopped", "finishedtrack")
+            ):
+                self.logs.debug("Media paused, stopped or track ended")
+                self.RPC.update_track(track=None, clear=True)
+            else:
+                model = models.SpotifyResponse(**formatted)
+                self.RPC.update_track(model, clear=False)
+                self.logs.debug(
+                    f"Playing: {model.playable.title} by {model.playable.artists}"
+                )
 
-        except Exception as e:
-            self.logs.error("Unexpected error occurred in socket runtime:", e)
-        finally:
-            self.client.close()
-            self.RPC.disconnect()
-            self.logs.info("Socket connection terminated.")
+    def _wait_for_socket(self):
+        i = inotify.adapters.Inotify()
+        i.add_watch(str(self.config.RUNTIME_PATH))
+        for event in i.event_gen(yield_nones=False):
+            (_, type_names, _, filename) = event
+            if filename == "ncspot.sock" and "IN_CREATE" in type_names:
+                break
