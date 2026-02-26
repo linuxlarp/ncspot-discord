@@ -13,11 +13,17 @@ By default, ncspot does not interact with the Discord RPC, nor does it support i
 - **Linux** or Unix Based System *(Linux is the only platform we currently support, future compatibility expected in another update)*
 
 ## Examples
+![Full example](https://github.com/linuxlarp/ncspot-discord/blob/main/STATIC/DEMO1.png)
+![Removing player icon](https://github.com/linuxlarp/ncspot-discord/blob/main/STATIC/DEMO2.png)
+![Removing timestamp](https://github.com/linuxlarp/ncspot-discord/blob/main/STATIC/DEMO3.png)
 
 ## Installation
+WIP
 
 ## Documentation
-To view documentation we currently have available, use the hyperlinks below.
+To view the documentation we currently have available, use the hyperlinks below.
+
+WIP
 
 
 ## Credits
