@@ -1,5 +1,6 @@
 [general]
 DEBUG = true # Allow debugging logs in I/O
+LOGS_ADD_SONG = true # Once updated on RPC, add additional logging to show what song is displaying on RPC.
 
 [socket]
 RUNTIME_PATH = "/run/user/1000/ncspot" # We recommend you leave this unchanged unless running the command 'ncspot info' says otherwise.
@@ -9,3 +10,5 @@ DISCORD_CLIENT_ID = 1475331730884788379 # Our public client ID, We recommend you
 
 [format]
 DISPLAY_CLIENT = true # Display if we are using ncspot to play music, Will be "Spotify" if false.
+DISPLAY_PLAYER_ICON = true # Display the small player icon to the bottom right of Album Art
+DISPLAY_PROGRESS = true # Display song progress in RPC. Eg 1:15 -> 3:41

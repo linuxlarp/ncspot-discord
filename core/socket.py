@@ -2,6 +2,7 @@ import json
 import os
 import socket
 import time
+from multiprocessing import Array
 
 import inotify.adapters
 

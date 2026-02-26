@@ -11,16 +11,19 @@ class Basic:
         config = self.load_config_file()
 
         self.DEBUG: bool = config.get("general", {}).get("DEBUG", False)
-        self.ENABLE_LOGGING: bool = config.get("general", {}).get(
-            "ENABLE_LOGGING", False
-        )
+        self.LOGS_ADD_SONG: bool = config.get("general", {}).get("LOGS_ADD_SONG", True)
         self.RUNTIME_PATH: str = config.get("socket", {}).get(
             "RUNTIME_PATH", "/run/user/1000/ncspot"
         )  # we find ncspot.sock here, where we make UNIX socket connection
 
         self.API_CLIENT_ID: str = config.get("api", {}).get("DISCORD_CLIENT_ID", None)
-        self.SHOW_LINKS: str = config.get("format", {}).get("SHOW_LINKS", True)
         self.DISPLAY_CLIENT: bool = config.get("format", {}).get("DISPLAY_CLIENT", True)
+        self.DISPLAY_PLAYER_ICON: bool = config.get("format", {}).get(
+            "DISPLAY_PLAYER_ICON", True
+        )
+        self.DISPLAY_PROGRESS: bool = config.get("format", {}).get(
+            "DISPLAY_PROGRESS", True
+        )
 
         try:
             CORE_DIR = os.path.dirname(os.path.abspath(__file__))
